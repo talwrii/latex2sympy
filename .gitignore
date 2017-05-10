@@ -1,5 +1,5 @@
-gen/*
-!gen/__init__.py
+latex2sympy/gen/*
+!latex2sympy/gen/__init__.py
 
 *.pyc
 
@@ -9,3 +9,6 @@ gen/*
 
 # OSX
 .DS_Store
+build
+latex2sympy.egg-info
+dist

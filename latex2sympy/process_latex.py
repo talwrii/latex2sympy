@@ -1,10 +1,13 @@
+# make code as python 3 compatible as possible
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import sympy
 import antlr4
 from antlr4.error.ErrorListener import ErrorListener
 
-from gen.PSParser import PSParser
-from gen.PSLexer import PSLexer
-from gen.PSListener import PSListener
+from .gen.PSParser import PSParser
+from .gen.PSLexer import PSLexer
+from .gen.PSListener import PSListener
 
 from sympy.printing.str import StrPrinter
 
@@ -39,7 +42,7 @@ class MathErrorListener(ErrorListener):
     def syntaxError(self, recog, symbol, line, col, msg, e):
         fmt = "%s\n%s\n%s"
         marker = "~" * col + "^"
-        
+
         if msg.startswith("missing"):
             err = fmt % (msg, self.src, marker)
         elif msg.startswith("no viable"):
@@ -68,7 +71,7 @@ def convert_relation(rel):
     elif rel.LTE():
         return sympy.LessThan(lh, rh)
     elif rel.GT():
-        return sympy.StrictGreaterThan(lh, rh) 
+        return sympy.StrictGreaterThan(lh, rh)
     elif rel.GTE():
         return sympy.GreaterThan(lh, rh)
     elif rel.EQUAL():
@@ -190,7 +193,7 @@ def convert_postfix(postfix):
             at_b = None
             at_a = None
             if ev.eval_at_sup():
-                at_b = do_subs(exp, ev.eval_at_sup()) 
+                at_b = do_subs(exp, ev.eval_at_sup())
             if ev.eval_at_sub():
                 at_a = do_subs(exp, ev.eval_at_sub())
             if at_b != None and at_a != None:
@@ -199,7 +202,7 @@ def convert_postfix(postfix):
                 exp = at_b
             elif at_a != None:
                 exp = at_a
-            
+
     return exp
 
 def convert_exp(exp):
@@ -273,7 +276,7 @@ def convert_atom(atom):
 def rule2text(ctx):
     stream = ctx.start.getInputStream()
     # starting index of starting token
-    startIdx = ctx.start.start 
+    startIdx = ctx.start.start
     # stopping index of stopping token
     stopIdx = ctx.stop.stop
 
@@ -327,7 +330,7 @@ def convert_func(func):
             arg = convert_func_arg(func.func_arg())
         else:
             arg = convert_func_arg(func.func_arg_noparens())
-            
+
         name = func.func_normal().start.text[1:]
 
         # change arc<trig> -> a<trig>
@@ -338,7 +341,7 @@ def convert_func(func):
         if name in ["arsinh", "arcosh", "artanh"]:
             name = "a" + name[2:]
             expr = getattr(sympy.functions, name)(arg, evaluate=False)
-            
+
         if (name=="log" or name=="ln"):
             if func.subexpr():
                 base = convert_expr(func.subexpr().expr())
@@ -368,7 +371,7 @@ def convert_func(func):
 
         return expr
     elif func.LETTER() or func.SYMBOL():
-        if func.LETTER(): 
+        if func.LETTER():
             fname = func.LETTER().getText()
         elif func.SYMBOL():
             fname = func.SYMBOL().getText()[1:]
@@ -457,7 +460,7 @@ def handle_sum_or_prod(func, name):
         end = convert_expr(func.supexpr().expr())
     else: # ^atom
         end = convert_atom(func.supexpr().atom())
-        
+
 
     if name == "summation":
         return sympy.Sum(val, (iter_var, start, end))
@@ -478,7 +481,7 @@ def handle_limit(func):
         direction = "+"
     approaching = convert_expr(sub.expr())
     content     = convert_mp(func.mp())
-    
+
     return sympy.Limit(content, var, approaching, direction)
 
 def get_differential_var(d):
@@ -497,22 +500,22 @@ def get_differential_var_str(text):
     return text
 
 def test_sympy():
-    print process_sympy("e^{(45 + 2)}")
-    print process_sympy("e + 5")
-    print process_sympy("5 + e")
-    print process_sympy("e")
-    print process_sympy("\\frac{dx}{dy} \\int y x^2 dy")
-    print process_sympy("\\frac{dx}{dy} 5")
-    print process_sympy("\\frac{d}{dx} \\int x^2 dx")
-    print process_sympy("\\frac{dx}{dy} \\int x^2 dx")
-    print process_sympy("\\frac{d}{dy} x^2 + x y = 0")
-    print process_sympy("\\frac{d}{dy} x^2 + x y = 2")
-    print process_sympy("\\frac{d x^3}{dy}")
-    print process_sympy("\\frac{d x^3}{dy} + x^3")
-    print process_sympy("\\int^{5x}_{2} x^2 dy")
-    print process_sympy("\\int_{5x}^{2} x^2 dx")
-    print process_sympy("\\int x^2 dx")
-    print process_sympy("2 4 5 - 2 3 1")
+    print(process_sympy("e^{(45 + 2)}"))
+    print(process_sympy("e + 5"))
+    print(process_sympy("5 + e"))
+    print(process_sympy("e"))
+    print(process_sympy("\\frac{dx}{dy} \\int y x^2 dy"))
+    print(process_sympy("\\frac{dx}{dy} 5"))
+    print(process_sympy("\\frac{d}{dx} \\int x^2 dx"))
+    print(process_sympy("\\frac{dx}{dy} \\int x^2 dx"))
+    print(process_sympy("\\frac{d}{dy} x^2 + x y = 0"))
+    print(process_sympy("\\frac{d}{dy} x^2 + x y = 2"))
+    print(process_sympy("\\frac{d x^3}{dy}"))
+    print(process_sympy("\\frac{d x^3}{dy} + x^3"))
+    print(process_sympy("\\int^{5x}_{2} x^2 dy"))
+    print(process_sympy("\\int_{5x}^{2} x^2 dx"))
+    print(process_sympy("\\int x^2 dx"))
+    print(process_sympy("2 4 5 - 2 3 1"))
 
 if __name__ == "__main__":
     test_sympy()
