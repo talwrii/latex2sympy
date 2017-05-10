@@ -1,7 +1,15 @@
-from sympy import *
+import unittest
+
+from sympy import (
+    Symbol,Mul, Add, Eq, Abs, sin, asin, cos, Pow,
+    csc, sec, Limit, oo, Derivative, Integral, factorial,
+    sqrt, root, StrictLessThan, LessThan, StrictGreaterThan,
+    GreaterThan, Sum, Product, E, log, tan
+)
+
 from sympy.abc import x,y,z,a,b,c,f,t,k,n
 
-from process_latex import process_sympy
+from latex2sympy import process_sympy
 
 theta = Symbol('theta')
 
@@ -187,23 +195,29 @@ BAD_STRINGS = [
     "\\frac{(2 + x}{1 - x)}"
 ]
 
-total = 0
-passed = 0
-for s, eq in GOOD_PAIRS:
-    total += 1
-    try:
-        if process_sympy(s) != eq:
-            print("ERROR: \"%s\" did not parse to %s" % (s, eq))
-        else:
-            passed += 1
-    except Exception as e:
-        print("ERROR: Exception when parsing \"%s\"" % s)
-for s in BAD_STRINGS:
-    total += 1
-    try:
-        process_sympy(s)
-        print("ERROR: Exception should have been raised for \"%s\"" % s)
-    except Exception:
-        passed += 1 
+class TestLatex2Sympy(unittest.TestCase):
+    "This is mostly glue code but we should vaguely test that it works"
+    def test_consistency(self):
+        total = 0
+        passed = 0
+        for s, eq in GOOD_PAIRS:
+            total += 1
+            try:
+                if process_sympy(s) != eq:
+                    print("ERROR: \"%s\" did not parse to %s" % (s, eq))
+                else:
+                    passed += 1
+            except Exception as e:
+                print("ERROR: Exception when parsing \"%s\"" % s)
+        for s in BAD_STRINGS:
+            total += 1
+            try:
+                process_sympy(s)
+                print("ERROR: Exception should have been raised for \"%s\"" % s)
+            except Exception:
+                passed += 1
 
-print("%d/%d STRINGS PASSED" % (passed, total))
+        print("%d/%d STRINGS PASSED" % (passed, total))
+
+if __name__ == '__main__':
+    unittest.main()
