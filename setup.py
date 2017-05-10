@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import subprocess
 import setuptools
 import os.path
-import distutils.core
+import sys
 
 from setuptools.command.develop import develop
 from setuptools.command.install import install
@@ -29,6 +29,11 @@ def compile_grammar():
     package_dir = os.path.join(here, 'latex2sympy')
     subprocess.check_output(['antlr4',  'PS.g4', '-o', 'gen'], cwd=package_dir)
 
+if sys.version_info.major == 3:
+    REQUIRES = ['antlr4-python3-runtime',  'sympy']
+else:
+    REQUIRES = ['antlr4-python2-runtime',  'sympy']
+
 setuptools.setup(
     name='latex2sympy',
     version=0.1,
@@ -41,7 +46,7 @@ setuptools.setup(
     packages=['latex2sympy'],
     classifiers=[
     ],
-    install_requires=['antlr-ast',  'sympy'],
+    install_requires=REQUIRES,
     cmdclass=dict(
         install=AntlrInstallCommand,
         develop=AntlrDevelopCommand),
