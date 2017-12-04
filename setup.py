@@ -36,7 +36,7 @@ else:
 
 setuptools.setup(
     name='latex2sympy',
-    version=0.1,
+    version="0.1.0",
     author='august.codes',
     author_email='augustt198@gmail.com',
     description='Parse latex markup into sympy: suitable for programmatic modifcation',
