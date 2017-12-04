@@ -42,7 +42,7 @@ setuptools.setup(
     description='Parse latex markup into sympy: suitable for programmatic modifcation',
     license='MIT',
     keywords='MIT',
-    url='',
+    url='https://github.com/augustt198/latex2sympy',
     packages=['latex2sympy'],
     classifiers=[
     ],
