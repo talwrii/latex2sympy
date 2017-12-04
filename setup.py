@@ -40,7 +40,7 @@ setuptools.setup(
     author='august.codes',
     author_email='augustt198@gmail.com',
     description='Parse latex markup into sympy: suitable for programmatic modifcation',
-    license='GPLv3',
+    license='MIT',
     keywords='MIT',
     url='',
     packages=['latex2sympy'],
