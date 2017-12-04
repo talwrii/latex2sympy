@@ -45,6 +45,8 @@ setuptools.setup(
     url='https://github.com/augustt198/latex2sympy',
     packages=['latex2sympy'],
     classifiers=[
+        'Topic :: Scientific/Engineering :: Mathematics',
+        'Topic :: Text Processing :: Markup'
     ],
     install_requires=REQUIRES,
     cmdclass=dict(
